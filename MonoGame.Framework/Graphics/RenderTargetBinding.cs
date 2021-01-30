@@ -88,8 +88,6 @@ namespace Microsoft.Xna.Framework.Graphics
             _depthFormat = renderTarget.DepthStencilFormat;
         }
 
-#if DIRECTX
-
         public RenderTargetBinding(RenderTarget2D renderTarget, int arraySlice)
         {
             if (renderTarget == null)
@@ -103,6 +101,8 @@ namespace Microsoft.Xna.Framework.Graphics
             _arraySlice = arraySlice;
             _depthFormat = renderTarget.DepthStencilFormat;
         }
+
+#if DIRECTX
 
         public RenderTargetBinding(RenderTarget3D renderTarget)
         {

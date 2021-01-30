@@ -893,7 +893,21 @@ namespace Microsoft.Xna.Framework.Graphics
             }
         }
 
-		public void SetRenderTargets(params RenderTargetBinding[] renderTargets)
+        public void SetRenderTarget(RenderTarget2D renderTarget, int arraySlice)
+        {
+            if (!GraphicsCapabilities.SupportsTextureArrays)
+                throw new InvalidOperationException("Texture arrays are not supported on this graphics device");
+
+            if (renderTarget == null)
+                SetRenderTarget(null);
+            else
+            {
+                _tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget, arraySlice);
+                SetRenderTargets(_tempRenderTargetBinding);
+            }
+        }
+
+        public void SetRenderTargets(params RenderTargetBinding[] renderTargets)
 		{
             // Avoid having to check for null and zero length.
             var renderTargetCount = 0;

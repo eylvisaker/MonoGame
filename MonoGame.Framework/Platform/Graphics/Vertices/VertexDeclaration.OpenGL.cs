@@ -24,9 +24,22 @@ namespace Microsoft.Xna.Framework.Graphics
             foreach (var ve in InternalVertexElements)
             {
                 var attributeLocation = shader.GetAttribLocation(ve.VertexElementUsage, ve.UsageIndex);
-                // XNA appears to ignore usages it can't find a match for, so we will do the same
+
+                // XNA appears to ignore usages it can't find a match for, so we will do the same.
+                // However, we also want to handle situations where there are implied parameters -
+                // for example when a vertex attribute is defined as float4x4 (HLSL) or mat4 (GLSL)
+                // and we use something like BlendWeights0-3 to supply the whole matrix. These won't
+                // appear as parameters in the generated GLSL but we still need to tell OpenGL about
+                // these vertex attributes.
                 if (attributeLocation < 0)
-                    continue;
+                {
+                    int start = shader.GetAttribLocation(ve.VertexElementUsage, 0);
+
+                    if (start < 0)
+                        continue;
+
+                    attributeLocation = start + ve.UsageIndex;
+                }
 
                 attrInfo.Elements.Add(new VertexDeclarationAttributeInfo.Element
                 {

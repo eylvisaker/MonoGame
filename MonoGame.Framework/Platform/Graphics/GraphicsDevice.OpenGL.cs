@@ -852,6 +852,8 @@ namespace Microsoft.Xna.Framework.Graphics
                     var attachement = (int)(FramebufferAttachment.ColorAttachment0 + i);
                     if (renderTarget.GLColorBuffer != renderTarget.GLTexture)
                         this.framebufferHelper.FramebufferRenderbuffer(attachement, renderTarget.GLColorBuffer, 0);
+                    else if (renderTarget.ArraySize > 1)
+                        this.framebufferHelper.FramebufferTextureLayer(attachement, renderTarget.GLTexture, 0, renderTargetBinding.ArraySlice);
                     else
                         this.framebufferHelper.FramebufferTexture2D(attachement, (int)renderTarget.GetFramebufferTarget(renderTargetBinding), renderTarget.GLTexture, 0, renderTarget.MultiSampleCount);
                 }

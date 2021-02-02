@@ -16,6 +16,8 @@ namespace Microsoft.Xna.Framework.Graphics
         int MultiSampleCount { get; }
         int LevelCount { get; }
 
+        int ArraySize { get; }
+
         TextureTarget GetFramebufferTarget(RenderTargetBinding renderTargetBinding);
     }
 }

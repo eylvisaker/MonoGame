@@ -907,6 +907,13 @@ namespace MonoGame.OpenGL
         [System.Security.SuppressUnmanagedCodeSecurity()]
         [UnmanagedFunctionPointer(callingConvention)]
         [MonoNativeFunctionWrapper]
+        internal delegate void FramebufferTextureLayerDelegate(FramebufferTarget target, FramebufferAttachment attachement,
+            int texture, int level, int layer);
+        internal static FramebufferTextureLayerDelegate FramebufferTextureLayer;
+
+        [System.Security.SuppressUnmanagedCodeSecurity()]
+        [UnmanagedFunctionPointer(callingConvention)]
+        [MonoNativeFunctionWrapper]
         internal delegate void FramebufferTexture2DMultiSampleDelegate(FramebufferTarget target, FramebufferAttachment attachement,
             TextureTarget textureTarget, int texture, int level, int samples);
         internal static FramebufferTexture2DMultiSampleDelegate FramebufferTexture2DMultiSample;
@@ -1444,6 +1451,7 @@ namespace MonoGame.OpenGL
             BindFramebuffer = LoadFunction<BindFramebufferDelegate> ("glBindFramebuffer");
             DeleteFramebuffers = LoadFunction<DeleteFramebuffersDelegate> ("glDeleteFramebuffers");
             FramebufferTexture2D = LoadFunction<FramebufferTexture2DDelegate> ("glFramebufferTexture2D");
+            FramebufferTextureLayer = LoadFunction<FramebufferTextureLayerDelegate> ("glFramebufferTextureLayer");
             FramebufferRenderbuffer = LoadFunction<FramebufferRenderbufferDelegate> ("glFramebufferRenderbuffer");
             RenderbufferStorage = LoadFunction<RenderbufferStorageDelegate> ("glRenderbufferStorage");
             RenderbufferStorageMultisample = LoadFunction<RenderbufferStorageMultisampleDelegate> ("glRenderbufferStorageMultisample");

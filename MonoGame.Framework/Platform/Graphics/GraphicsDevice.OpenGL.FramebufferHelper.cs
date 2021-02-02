@@ -129,6 +129,12 @@ namespace Microsoft.Xna.Framework.Graphics
                 GraphicsExtensions.CheckGLError();
             }
 
+            internal virtual void FramebufferTextureLayer(int attachement, int texture, int level, int layer)
+            {
+                GL.FramebufferTextureLayer(FramebufferTarget.Framebuffer, (FramebufferAttachment)attachement, texture, level, layer);
+                GraphicsExtensions.CheckGLError();
+            }
+
             internal virtual void FramebufferRenderbuffer(int attachement, int renderbuffer, int level = 0)
             {
                 GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, (FramebufferAttachment)attachement, RenderbufferTarget.Renderbuffer, renderbuffer);

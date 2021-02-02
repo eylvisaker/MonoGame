@@ -23,10 +23,11 @@ namespace Microsoft.Xna.Framework.Graphics
         int IRenderTarget.GLColorBuffer { get; set; }
         int IRenderTarget.GLDepthBuffer { get; set; }
         int IRenderTarget.GLStencilBuffer { get; set; }
+        int IRenderTarget.ArraySize { get { return ArraySize; } }
 
         TextureTarget IRenderTarget.GetFramebufferTarget(RenderTargetBinding renderTargetBinding)
         {
-            return glTarget;
+            return TextureTarget.Texture2D;
         }
 
         private void PlatformConstruct(GraphicsDevice graphicsDevice, int width, int height, bool mipMap,

@@ -21,6 +21,7 @@ namespace Microsoft.Xna.Framework.Graphics
 		DepthStencilState _depthStencilState; 
 		RasterizerState _rasterizerState;		
 		Effect _effect;
+		EffectParameter _effectTextureParameter;
         bool _beginCalled;
 
 		SpriteEffect _spriteEffect;
@@ -73,6 +74,9 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="rasterizerState">State of the rasterization. Uses <see cref="RasterizerState.CullCounterClockwise"/> if null.</param>
         /// <param name="effect">A custom <see cref="Effect"/> to override the default sprite effect. Uses default sprite effect if null.</param>
         /// <param name="transformMatrix">An optional matrix used to transform the sprite geometry. Uses <see cref="Matrix.Identity"/> if null.</param>
+        /// <param name="effectTextureParameter">An optional parameter for the effect used to set the texture for the sprite.
+        /// This parameter must belong to the effect passed. If this value is not null, this will override the behavior of SpriteBatch
+        /// to set the first texture on the GraphicsDevice.</param>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="Begin"/> is called next time without previous <see cref="End"/>.</exception>
         /// <remarks>This method uses optional parameters.</remarks>
         /// <remarks>The <see cref="Begin"/> Begin should be called before drawing commands, and you cannot call it again before subsequent <see cref="End"/>.</remarks>
@@ -84,12 +88,12 @@ namespace Microsoft.Xna.Framework.Graphics
              DepthStencilState depthStencilState = null,
              RasterizerState rasterizerState = null,
              Effect effect = null,
-             Matrix? transformMatrix = null
-        )
+             Matrix? transformMatrix = null,
+             EffectParameter effectTextureParameter = null)
         {
             if (_beginCalled)
                 throw new InvalidOperationException("Begin cannot be called again until End has been successfully called.");
-
+            
             // defaults
             _sortMode = sortMode;
             _blendState = blendState ?? BlendState.AlphaBlend;
@@ -97,6 +101,7 @@ namespace Microsoft.Xna.Framework.Graphics
             _depthStencilState = depthStencilState ?? DepthStencilState.None;
             _rasterizerState = rasterizerState ?? RasterizerState.CullCounterClockwise;
             _effect = effect;
+            _effectTextureParameter = effectTextureParameter;
             _spriteEffect.TransformMatrix = transformMatrix;
 
             // Setup things now so a user can change them.
@@ -122,7 +127,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			if (_sortMode != SpriteSortMode.Immediate)
 				Setup();
             
-            _batcher.DrawBatch(_sortMode, _effect);
+            _batcher.DrawBatch(_sortMode, _effect, _effectTextureParameter);
         }
 		
 		void Setup() 
@@ -414,7 +419,7 @@ namespace Microsoft.Xna.Framework.Graphics
 		{
 			if (_sortMode == SpriteSortMode.Immediate)
 			{
-				_batcher.DrawBatch(_sortMode, _effect);
+				_batcher.DrawBatch(_sortMode, _effect, _effectTextureParameter);
 			}
 		}
 

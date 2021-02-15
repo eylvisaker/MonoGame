@@ -149,7 +149,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </summary>
         /// <param name="sortMode">The type of depth sorting desired for the rendering.</param>
         /// <param name="effect">The custom effect to apply to the drawn geometry</param>
-        public unsafe void DrawBatch(SpriteSortMode sortMode, Effect effect)
+        public unsafe void DrawBatch(SpriteSortMode sortMode, Effect effect, EffectParameter textureParameter = null)
 		{
             if (effect != null && effect.IsDisposed)
                 throw new ObjectDisposedException("effect");
@@ -204,7 +204,7 @@ namespace Microsoft.Xna.Framework.Graphics
                         var shouldFlush = !ReferenceEquals(item.Texture, tex);
                         if (shouldFlush)
                         {
-                            FlushVertexArray(startIndex, index, effect, tex);
+                            FlushVertexArray(startIndex, index, effect, tex, textureParameter);
 
                             tex = item.Texture;
                             startIndex = index = 0;
@@ -223,7 +223,7 @@ namespace Microsoft.Xna.Framework.Graphics
                     }
                 }
                 // flush the remaining vertexArray data
-                FlushVertexArray(startIndex, index, effect, tex);
+                FlushVertexArray(startIndex, index, effect, tex, textureParameter);
                 // Update our batch count to continue the process of culling down
                 // large batches
                 batchCount -= numBatchesToProcess;
@@ -239,7 +239,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="end">End index of vertices to draw. Not used except to compute the count of vertices to draw.</param>
         /// <param name="effect">The custom effect to apply to the geometry</param>
         /// <param name="texture">The texture to draw.</param>
-        private void FlushVertexArray(int start, int end, Effect effect, Texture texture)
+        private void FlushVertexArray(int start, int end, Effect effect, Texture texture, EffectParameter textureParameter)
         {
             if (start == end)
                 return;
@@ -249,14 +249,22 @@ namespace Microsoft.Xna.Framework.Graphics
             // If the effect is not null, then apply each pass and render the geometry
             if (effect != null)
             {
+                if (textureParameter != null)
+                {
+                    textureParameter.SetValue(texture);
+                }
+
                 var passes = effect.CurrentTechnique.Passes;
                 foreach (var pass in passes)
                 {
                     pass.Apply();
 
-                    // Whatever happens in pass.Apply, make sure the texture being drawn
-                    // ends up in Textures[0].
-                    _device.Textures[0] = texture;
+                    if (textureParameter == null)
+                    {
+                        // Whatever happens in pass.Apply, make sure the texture being drawn
+                        // ends up in Textures[0].
+                        _device.Textures[0] = texture;
+                    }
 
                     _device.DrawUserIndexedPrimitives(
                         PrimitiveType.TriangleList,
